@@ -57,3 +57,14 @@ IAC programs: tradeoffs.
 using aws.
 
 terraform code is written in hashicorp config language, HCL. .tf files. declarative langugae.
+
+in a tf file you'll have a 'provider' block, and one or more resource blocks
+
+```tf
+resource "PROVIDER_TYPE" "NAME" {
+	[CONFIG ...]
+}
+```
+see first_script for example
+
+use `terraform plan` to see what terraform will do. then terraform apply to do it
