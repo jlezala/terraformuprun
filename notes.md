@@ -93,4 +93,8 @@ you'll also need to amend the aws_instance to use it. use interposlation syntax 
 
 you can graph the dependencies you're creating when interpolating with `terraform graph`
 
-apply again
+apply again - not this time you'll have to tear down the instance and spin it up again. You'll have to do this for most things that aren't changing tags. when the server is up you can go to the ip:port and see hello world.
+
+examples here deploy into default vpc, and also default vpc subnets of the vpc. these are all public subnets, which for a proper app is a bad idea, only a few small servers with reverse proxies and load balancers should be in public subnets
+
+
