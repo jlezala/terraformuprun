@@ -75,3 +75,22 @@ now is a good time to vc. you should git your main.tf file
 
 also gitignore `.terraform`, `*.tfstate`, and `*.tfstate.backup`
 
+## simple web server
+```sh
+echo "Hello World" > index.html
+nohup busybox httpd -f -p 8080 &
+```
+
+running on ports below 1024 requires admin - usually bad idea.
+
+in real world our web server would be more complicated than this (think Django) and you'd use Packer to create a custom AMI with the webserver installed on it. here we'll just add the script into the .tf file, as the user_data parameter which is executed which aws will execute on starting. You'll use heredoc syntax, EOF for creating multiline strings.
+
+you'll also need to create a security group to allow webtraffic (disallowed by default on EC2 instances), as another resource.
+
+CIDR blocks are  concise way to specify IP ranges.
+
+you'll also need to amend the aws_instance to use it. use interposlation syntax `${TYPE.NAME.ATTRIBUTE}` to refer to other resources in the file
+
+you can graph the dependencies you're creating when interpolating with `terraform graph`
+
+apply again
