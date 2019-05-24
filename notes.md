@@ -67,4 +67,11 @@ resource "PROVIDER_TYPE" "NAME" {
 ```
 see first_script for example
 
-use `terraform plan` to see what terraform will do. then terraform apply to do it
+use `terraform plan` to see what terraform will do. then `terraform apply` to do it
+
+if you were to add a name tag in the file, and run `plan` again it sould find the server (it tracks resources already created) and update it inplace.
+
+now is a good time to vc. you should git your main.tf file
+
+also gitignore `.terraform`, `*.tfstate`, and `*.tfstate.backup`
+
