@@ -97,4 +97,38 @@ apply again - not this time you'll have to tear down the instance and spin it up
 
 examples here deploy into default vpc, and also default vpc subnets of the vpc. these are all public subnets, which for a proper app is a bad idea, only a few small servers with reverse proxies and load balancers should be in public subnets
 
+## Deploy a configurable web server
+to adhere to DRY principles you can define input variables. every bit on knowledge must have a single authoritative representaion in the system.
 
+```tf
+varible "NAME" {
+	[CONFIG ...]
+}
+```
+
+contain optional params:
+* description
+* default
+* type - string list or map (i.e. dict)
+
+```tf
+variable "list example" {
+	description = "an example of a list"
+	type = "list"
+	default = [1,2,3]
+}
+```
+
+when you enter a var without a default you will be prompted for it when you run `plan` or `apply`, or you can specify a cl with `terraform plan -var server_port = "8000"`
+
+you can reference with interpolation code: `"${var.VARIABLE_NAME}"`
+
+You can also define output variables with
+
+```tf
+output "public_ip" {
+	value = "${aws_instance.example.public_ip"
+}
+```
+
+this will be printed when you apply
