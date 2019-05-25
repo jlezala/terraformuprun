@@ -131,4 +131,25 @@ output "public_ip" {
 }
 ```
 
-this will be printed when you apply
+this will be printed when you apply, and you can also grab it with `terraform output public_ip`
+
+## Cluster of WS
+with Auto Scaling Group (ASG) to manage for you
+
+use a "aws_launch_configuration" resource, replacing ths instance resource. syntax is nearly the same, just add a 'lifecycle' param - almost any resource has a lifecycle param available which dictates how it's created updated and destroyed.
+
+we set `create_before_destroy` meaning tf will create a new ec2 instance, initialise is, and only then remove the old one.
+
+the catch with `create_before_destroy` is that is needs to also be on every resource that depends on depends on what you've put it on. for us, our security group will also need to have it
+
+now create the ASG with the "aws_autoscaling_group" resource. you'll need to specify the launch config to use, the min and max sizes.
+
+Also AZs - this is account specific so use a data source to fetch your available ones. a data source is a piece of read only info fetched from the provider. you can then reference it with `${data.TYPE.NAME.ATTRIBUTE}`
+
+next you want a load balancer to figure out which instance to hit, and when to spin up more instances. use the `aws_elb` resource. You'll need a listener. you'll also need a new sec group for your elb and add it to your elb resrouce.
+
+last, add a health check block. HC checks up on instances and stops routing traffic to them if it detects something is wrong. the sec group will need to be configured to allow this
+
+put in an output for the dns address of the elb, apply and try the address
+
+tear down your stuff with `terraform destroy`
