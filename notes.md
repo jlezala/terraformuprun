@@ -153,3 +153,23 @@ last, add a health check block. HC checks up on instances and stops routing traf
 put in an output for the dns address of the elb, apply and try the address
 
 tear down your stuff with `terraform destroy`
+
+# Chapter 3 how to manage terraform state
+how tf tracks the state of infra you've created with tf, or otherwise deployed on aws. impact on file layout, isolation and lcoking
+
+## tf state
+a tf state file records the info about what infra tf has created. JSON format. whenever you run terraform it looks in here for info about the resources, peeks at aws to find those rsources, and compares them to whats in your config file.
+
+issues when have multiple people: all team needs to access. locking becomes an issue. its best practice to isolate your environments (test, staging, prod etc.)
+
+putting state files into vc is a bad idea, from security and error POV
+
+tf has built in support for remote state storage. there are a few options including s3. though s3 is eventually-consistent, shouldnt be an issue unless your team is very large.
+
+set up an s3 bucket in a new _main.tf_, identify aws as provider, create an s3 bucket resource. give it 3 params, a bucket name, versioning (enabled), and a 'prevent_destroy' lifecycle.
+
+prevent destroy will stop `terraform destroy` tearing it down.
+
+you'll need to define a `backend` configuration in your `.tf` file. (note, per the book this was done with command line). You'll have to run `terraform init` to set it up, and check your bucket for the file.
+
+When this config is set, terraform will always pull the state from s3 before running a command, and automatically push the state to s3 after running. add an output "s3_bucket_arn" to see it in action. when applied, go to the s3 bucket, make sure versioning is selected and you'll be able to see a new version.
